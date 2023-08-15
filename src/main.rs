@@ -8,9 +8,9 @@ fn main() -> eframe::Result<()> {
 
     let native_options = eframe::NativeOptions::default();
     eframe::run_native(
-        "eframe template",
+        "Barnsley",
         native_options,
-        Box::new(|cc| Box::new(eframe_template::TemplateApp::new(cc))),
+        Box::new(|cc| Box::new(barnsley_gui::TemplateApp::new(cc))),
     )
 }
 
@@ -25,7 +25,7 @@ fn main() {
     wasm_bindgen_futures::spawn_local(async {
         eframe::WebRunner::new()
             .start(
-                "the_canvas_id", // hardcode it
+                "Barnsley", // hardcode it
                 web_options,
                 Box::new(|cc| Box::new(barnsley_gui::TemplateApp::new(cc))),
             )
