@@ -1,5 +1,5 @@
 [package]
-name = "barnsley-gui"
+name = "barnsley_gui"
 version = "0.1.0"
 authors = ["Marcus Hughes <hughes.jmb@gmail.com>"]
 edition = "2021"
