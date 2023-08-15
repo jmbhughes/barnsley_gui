@@ -25,7 +25,7 @@ fn main() {
     wasm_bindgen_futures::spawn_local(async {
         eframe::WebRunner::new()
             .start(
-                "Barnsley", // hardcode it
+                "the_canvas_id", // hardcode it
                 web_options,
                 Box::new(|cc| Box::new(barnsley_gui::TemplateApp::new(cc))),
             )
