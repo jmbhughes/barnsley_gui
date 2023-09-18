@@ -17,9 +17,12 @@ eframe = { version = "0.22.0", default-features = false, features = [
 log = "0.4"
 image = { version = "0.24", default-features = false, features = ["png"] }
 egui_extras = { version="0.22.0", features = ["image"] }
+ndarray = "0.15.6"
 
 # You only need serde if you want app persistence:
 serde = { version = "1", features = ["derive"] }
+barnsley = { version = "0.2.0", path = "../barnsley" }
+strum = "0.25.0"
 
 # native:
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
