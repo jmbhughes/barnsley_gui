@@ -123,7 +123,7 @@ impl MyApp {
     fn render_transform_ui(&mut self,  ui: &mut Ui, index: usize) {
         let mut transform_counter = 0;
         for transform in &mut self.animation_sequence.ifs_vec.get_mut(index).unwrap().transforms.iter_mut() {
-            (self.rerender, self.delete_triggered) = match transform {
+            let (rerender_update, delete_trigger_update) = match transform {
                 Transform::LinearTransform(t) => 
                     t.ui(ui, format!("Linear: {transform_counter}")),
                 Transform::AffineTransform(t) => 
@@ -134,6 +134,10 @@ impl MyApp {
                     t.ui(ui, format!("InverseJulia: {transform_counter}")),
             };
 
+            self.rerender |= rerender_update;
+            self.delete_triggered |= delete_trigger_update;
+
+            println!("{}", self.rerender);
             if self.delete_triggered {
                 self.transform_to_delete = transform_counter;
             }
@@ -199,10 +203,10 @@ impl eframe::App for MyApp {
                 );
             };
 
-            ui.add(egui::Slider::new(&mut self.width, 0..=4096).text("Width"));
-            ui.add(egui::Slider::new(&mut self.height, 0..=4096).text("Height"));
-            ui.add(egui::Slider::new(&mut self.num_points, 0..=10000).text("Points"));
-            ui.add(egui::Slider::new(&mut self.num_iterations, 0..=10000).text("Iterations"));
+            ui.add(egui::Slider::new(&mut self.width, 1..=4096).text("Width"));
+            ui.add(egui::Slider::new(&mut self.height, 1..=4096).text("Height"));
+            ui.add(egui::Slider::new(&mut self.num_points, 1..=10000).text("Points"));
+            ui.add(egui::Slider::new(&mut self.num_iterations, 1..=10000).text("Iterations"));
 
             // Render transform UI
             self.render_transform_ui(ui, 0);
@@ -253,106 +257,8 @@ impl eframe::App for MyApp {
                     1,
                 );
             }
-
             
             ui.end_row();
         });
-
-        //     let low_x = -5;
-        //     let high_x = 105;
-        //     let low_y = -5;
-        //     let high_y = 5;
-        //     let bounds = PlotBounds::from_min_max([low_x as f64, low_y as f64], [high_x as f64, high_y as f64]);
-        //     let response = Plot::new("my_plot")
-        //         .view_aspect(10.0)
-        //         .show_y(false)
-        //         .allow_zoom(false)
-        //         .allow_scroll(false)
-        //         .allow_drag(false)
-        //         .allow_boxed_zoom(false)
-        //         .x_grid_spacer(|_|{vec![]})
-        //         .label_formatter(|name, value|{
-        //             if !name.is_empty() {
-        //                 format!("{} at {}", name, value.x.round() as i64)
-        //             } else {
-        //                 format!("{}", value.x.round() as i64)
-        //             }})
-        //         //.coordinates_formatter(plot::Corner::RightTop, CoordinatesFormatter::with_decimals(0))
-        //         //.x_grid_spacer(move |_|{(low_x..high_x).map(|v| GridMark{value: v as f64, step_size: 1.0}).collect()})
-        //         .y_grid_spacer(|_|{vec![]})
-        //         //.show_background(false)
-        //         .show(ui, |plot_ui|
-        //             {
-
-        //                 //plot_ui.line(line);
-        //                 // let points = Points::new(positions)
-        //                 //     .name("hi")
-        //                 //     .filled(true)
-        //                 //     .radius(10.0);
-        //                 // plot_ui.points(points);
-        //                 // for i in 0..self.num_points - 1 {
-        //                 //     let points = vec![[self.positions[i], 0.0], [self.positions[i+1], 0.0]];
-        //                 //     let line = Line::new(PlotPoints::new(points)).width(5.0);
-        //                 //     plot_ui.line(line);
-        //                 // }
-
-        //                 let mut bars: Vec<Bar> = (0..(self.num_points-1)).map(|i| Bar::new(0.0,(self.positions[i+1]-self.positions[i]) as f64).horizontal().base_offset(self.positions[i] as f64).width(1.0)).collect();
-        // //                 plot_ui.bar_chart(BarChart::new(bars)
-        // //                                     .element_formatter(Box::new(|bar, chart| {bar.name.clone()})));
-
-        // //                 for i in 0..self.num_points {
-        // //                     let point = PlotPoint::new(self.positions[i] as f64, 0.01);
-        // //                     let coord = vec![[self.positions[i] as f64, 0.0]];
-        // //                     //plot_ui.text(Text::new(point, labels[i]));
-        // //                     plot_ui.points(Points::new(coord).name(self.labels[i].as_str()).filled(true).radius(15.0));
-        // //                     //plot_ui.points(Points::new(vec![label.]))
-        // //                 }
-
-        // //                 let marker = VLine::new(self.current_position as f64).width(5.0);
-        // //                 plot_ui.vline(marker);
-
-        // //                 plot_ui.set_plot_bounds(bounds)
-        // //             });
-
-        // //     if response.response.clicked_by(egui::PointerButton::Primary) {
-        // //         let pos = response.response.hover_pos().unwrap();
-        // //         println!("{} {}", pos.x, pos.y);
-        // //         let value = response.transform.value_from_position(pos);
-        // //         println!("(x, y) = ({}, {})",value.x, value.y);
-        // //         self.current_position = value.x.round() as i64;
-        // //     }
-
-        // //     if response.response.clicked_by(egui::PointerButton::Secondary) {
-        // //         let pos = response.response.hover_pos().unwrap();
-        // //         println!("{} {}", pos.x, pos.y);
-        // //         let value = response.transform.value_from_position(pos);
-        // //         println!("(x, y) = ({}, {})",value.x, value.y);
-        // //         let value = PlotPoint::new(value.x.round(), value.y.round());
-        // //         if (value.x as i64) < *self.positions.iter().min().unwrap() {
-        // //             println!("adding a new min");
-        // //         } else if (value.x as i64) > *self.positions.iter().max().unwrap() {
-        // //             println!("adding a new max");
-        // //         } else {
-        // //             println!("break an animation!");
-        // //             // self.num_points += 1;
-        // //             // self.positions.insert(self.positions.len(), value.x.round() as i64);
-        // //             // self.labels.insert(self.labels.len(), format!("{}", value.x).to_string());
-        // //         }
-        // //         // println!("{} {} {} {}", response.response.rect.min.x,
-        // //         //                response.response.rect.min.y,
-        // //         //                response.response.rect.max.x,
-        // //         //                response.response.rect.max.y);
-        // //     }
-
-        // //     // if response.response.clicked_by(egui::PointerButton::Secondary) {
-        // //     //     let pos = response.response.hover_pos().unwrap();
-        // //     //     println!("DELETE {} {}", pos.x, pos.y);
-        // //     // }
-
-        // //     if response.response.dragged() {
-        // //         let delta = response.response.drag_delta();
-        // //         println!("drag {} {}", delta.x, delta.y);
-        // //     }
-        // // });
     }
 }
