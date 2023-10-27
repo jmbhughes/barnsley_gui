@@ -1,8 +1,10 @@
 use std::f32::consts::PI;
 
-use barnsley::{transform::{LinearTransform, AffineTransform, MoebiusTransform, InverseJuliaTransform}, util::Color};
+use barnsley::{
+    transform::{AffineTransform, InverseJuliaTransform, LinearTransform, MoebiusTransform},
+    util::Color,
+};
 use egui::{Color32, Rgba, Ui};
-
 
 pub trait Visualize {
     fn ui(&mut self, ui: &mut Ui, label: String) -> (bool, bool);
@@ -186,7 +188,6 @@ impl Visualize for MoebiusTransform {
                 }
             });
 
-
             ui.horizontal(|ui| {
                 ui.label("b.re");
                 let result = ui.add(egui::Slider::new(&mut self.b.re, -1.0..=1.0));
@@ -267,7 +268,6 @@ impl Visualize for MoebiusTransform {
     }
 }
 
-
 impl Visualize for InverseJuliaTransform {
     fn ui(&mut self, ui: &mut Ui, label: String) -> (bool, bool) {
         let mut rerender = false;
@@ -284,7 +284,7 @@ impl Visualize for InverseJuliaTransform {
 
             ui.horizontal(|ui| {
                 ui.label("theta");
-                let result = ui.add(egui::Slider::new(&mut self.theta, 0.0..=2.0*PI));
+                let result = ui.add(egui::Slider::new(&mut self.theta, 0.0..=2.0 * PI));
                 if result.changed() {
                     rerender = true;
                 }

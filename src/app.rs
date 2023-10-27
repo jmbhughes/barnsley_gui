@@ -5,11 +5,7 @@ use barnsley::transform::{
     self, AffineTransform, LinearTransform, MoebiusTransform, Transform, Transformable,
 };
 use barnsley::util::Color;
-use egui::plot::{
-    Bar, BarChart, CoordinatesFormatter, GridMark, Line, Plot, PlotBounds, PlotPoint, PlotPoints,
-    Points, Text, VLine,
-};
-use egui::{self, plot, CollapsingHeader, Color32, Frame, Rgba, Slider, Stroke, Ui};
+use egui::{self, CollapsingHeader, Color32, Frame, Rgba, Slider, Stroke, Ui};
 use egui_extras::RetainedImage;
 use strum::IntoEnumIterator;
 
@@ -38,9 +34,9 @@ pub struct MyApp {
     width: usize,
     height: usize,
     selected_transform_to_add: Transform,
-    pub (crate) delete_triggered: bool,
-    pub (crate) transform_to_delete: usize,
-    pub (crate) rerender: bool,
+    pub(crate) delete_triggered: bool,
+    pub(crate) transform_to_delete: usize,
+    pub(crate) rerender: bool,
 }
 
 impl Default for MyApp {
@@ -119,29 +115,33 @@ impl MyApp {
                 });
         }
     }
-    
-    fn render_transform_ui(&mut self,  ui: &mut Ui, index: usize) {
+
+    fn render_transform_ui(&mut self, ui: &mut Ui, index: usize) {
         let mut transform_counter = 0;
-        for transform in &mut self.animation_sequence.ifs_vec.get_mut(index).unwrap().transforms.iter_mut() {
+        for transform in &mut self
+            .animation_sequence
+            .ifs_vec
+            .get_mut(index)
+            .unwrap()
+            .transforms
+            .iter_mut()
+        {
             let (rerender_update, delete_trigger_update) = match transform {
-                Transform::LinearTransform(t) => 
-                    t.ui(ui, format!("Linear: {transform_counter}")),
-                Transform::AffineTransform(t) => 
-                    t.ui(ui, format!("Affine: {transform_counter}")),
-                Transform::MoebiusTransform(t) => 
-                    t.ui(ui, format!("Moebius: {transform_counter}")),
-                Transform::InverseJuliaTransform(t) => 
-                    t.ui(ui, format!("InverseJulia: {transform_counter}")),
+                Transform::LinearTransform(t) => t.ui(ui, format!("Linear: {transform_counter}")),
+                Transform::AffineTransform(t) => t.ui(ui, format!("Affine: {transform_counter}")),
+                Transform::MoebiusTransform(t) => t.ui(ui, format!("Moebius: {transform_counter}")),
+                Transform::InverseJuliaTransform(t) => {
+                    t.ui(ui, format!("InverseJulia: {transform_counter}"))
+                }
             };
 
             self.rerender |= rerender_update;
             self.delete_triggered |= delete_trigger_update;
 
-            println!("{}", self.rerender);
             if self.delete_triggered {
                 self.transform_to_delete = transform_counter;
             }
-        
+
             transform_counter += 1;
         }
     }
@@ -235,12 +235,11 @@ impl eframe::App for MyApp {
                     1,
                 );
             }
-            
+
             egui::ComboBox::from_label("Add a transform")
                 .selected_text(self.selected_transform_to_add.get_name())
                 .show_ui(ui, |ui| {
                     for t in Transform::iter() {
-                        println!("{}", t.get_name());
                         ui.selectable_value(&mut self.selected_transform_to_add, t, t.get_name());
                     }
                 });
@@ -257,7 +256,7 @@ impl eframe::App for MyApp {
                     1,
                 );
             }
-            
+
             ui.end_row();
         });
     }
