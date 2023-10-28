@@ -11,22 +11,6 @@ use strum::IntoEnumIterator;
 
 // #[derive(PartialEq)]
 pub struct MyApp {
-    selected: usize,
-    selector_vec: Vec<String>,
-    max_value: usize,
-    show_add_new_ifs_window: bool,
-    positions: Vec<i64>,
-    labels: Vec<String>,
-    current_position: i64,
-    paused: bool,
-    time: f64,
-    zoom: f32,
-    start_line_width: f32,
-    depth: usize,
-    length_factor: f32,
-    luminance_factor: f32,
-    width_factor: f32,
-    line_count: usize,
     animation_sequence: AnimationSequence,
     rendered_image: Image,
     num_points: usize,
@@ -54,28 +38,6 @@ impl Default for MyApp {
         ifs_vec[1].add_transform(MoebiusTransform::random().into());
 
         Self {
-            selected: 0,
-            selector_vec: vec!["1".to_string(), "2".to_string(), "3".to_string()], //get_vec(),
-            max_value: 3,
-            show_add_new_ifs_window: false,
-            positions: vec![0, 10, 30, 100],
-            //let positions = vec![[0.0, 0.0], [1.0, 0.0], [10.0, 0.0]];
-            labels: vec![
-                "A".to_string(),
-                "weird".to_string(),
-                "swirl".to_string(),
-                "end".to_string(),
-            ],
-            current_position: 3,
-            paused: false,
-            time: 0.0,
-            zoom: 0.25,
-            start_line_width: 2.5,
-            depth: 9,
-            length_factor: 0.8,
-            luminance_factor: 0.8,
-            width_factor: 0.9,
-            line_count: 0,
             animation_sequence: AnimationSequence {
                 ifs_vec: ifs_vec,
                 step_counts: vec![2],
@@ -94,28 +56,6 @@ impl Default for MyApp {
 }
 
 impl MyApp {
-    fn add_new_ifs(&mut self, ctx: &egui::Context) {
-        if self.show_add_new_ifs_window {
-            egui::Window::new("Do you want to quit?")
-                .collapsible(false)
-                .resizable(false)
-                .show(ctx, |ui| {
-                    ui.horizontal(|ui| {
-                        if ui.button("Cancel").clicked() {
-                            self.show_add_new_ifs_window = false;
-                        }
-
-                        if ui.button("Yes!").clicked() {
-                            self.selector_vec
-                                .insert(self.selector_vec.len(), (self.max_value + 1).to_string());
-                            self.max_value += 1;
-                            self.show_add_new_ifs_window = false;
-                        }
-                    });
-                });
-        }
-    }
-
     fn render_transform_ui(&mut self, ui: &mut Ui, index: usize) {
         let mut transform_counter = 0;
         for transform in &mut self
