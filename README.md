@@ -1,5 +1,7 @@
 # Barnsley
 
-Coming soon! A web based editor for iterated function systems. 
+[A web based editor for iterated function systems.](https://barnsley.dev/)
 
-In the meantime use, [https://github.com/jmbhughes/barnsley](https://github.com/jmbhughes/barnsley). 
+This is a work in progress. Expect magjor changes. 
+
+You can also use the Rust library version at [https://github.com/jmbhughes/barnsley](https://github.com/jmbhughes/barnsley). 
