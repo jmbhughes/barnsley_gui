@@ -1,32 +1,16 @@
 use barnsley::animation::AnimationSequence;
 use barnsley::ifs::IFS;
 use barnsley::image::Image;
-use barnsley::transform::{
-    self, AffineTransform, LinearTransform, MoebiusTransform, Transform, Transformable,
-};
-use barnsley::util::Color;
-use egui::{self, CollapsingHeader, Color32, Frame, Rgba, Slider, Stroke, Ui};
-use egui_extras::RetainedImage;
+use barnsley::transform::{AffineTransform, LinearTransform, MoebiusTransform, Transform, Transformable};
+use egui::{self, Ui};
+use egui_extras::install_image_loaders;
 use strum::IntoEnumIterator;
+use std::io::Cursor;
+
+use crate::transform::Visualize;
 
 // #[derive(PartialEq)]
 pub struct MyApp {
-    selected: usize,
-    selector_vec: Vec<String>,
-    max_value: usize,
-    show_add_new_ifs_window: bool,
-    positions: Vec<i64>,
-    labels: Vec<String>,
-    current_position: i64,
-    paused: bool,
-    time: f64,
-    zoom: f32,
-    start_line_width: f32,
-    depth: usize,
-    length_factor: f32,
-    luminance_factor: f32,
-    width_factor: f32,
-    line_count: usize,
     animation_sequence: AnimationSequence,
     rendered_image: Image,
     num_points: usize,
@@ -37,6 +21,7 @@ pub struct MyApp {
     pub(crate) delete_triggered: bool,
     pub(crate) transform_to_delete: usize,
     pub(crate) rerender: bool,
+    counter: u8
 }
 
 impl Default for MyApp {
@@ -54,28 +39,6 @@ impl Default for MyApp {
         ifs_vec[1].add_transform(MoebiusTransform::random().into());
 
         Self {
-            selected: 0,
-            selector_vec: vec!["1".to_string(), "2".to_string(), "3".to_string()], //get_vec(),
-            max_value: 3,
-            show_add_new_ifs_window: false,
-            positions: vec![0, 10, 30, 100],
-            //let positions = vec![[0.0, 0.0], [1.0, 0.0], [10.0, 0.0]];
-            labels: vec![
-                "A".to_string(),
-                "weird".to_string(),
-                "swirl".to_string(),
-                "end".to_string(),
-            ],
-            current_position: 3,
-            paused: false,
-            time: 0.0,
-            zoom: 0.25,
-            start_line_width: 2.5,
-            depth: 9,
-            length_factor: 0.8,
-            luminance_factor: 0.8,
-            width_factor: 0.9,
-            line_count: 0,
             animation_sequence: AnimationSequence {
                 ifs_vec: ifs_vec,
                 step_counts: vec![2],
@@ -89,33 +52,12 @@ impl Default for MyApp {
             delete_triggered: false,
             transform_to_delete: 0,
             rerender: false,
+            counter: 0
         }
     }
 }
 
 impl MyApp {
-    fn add_new_ifs(&mut self, ctx: &egui::Context) {
-        if self.show_add_new_ifs_window {
-            egui::Window::new("Do you want to quit?")
-                .collapsible(false)
-                .resizable(false)
-                .show(ctx, |ui| {
-                    ui.horizontal(|ui| {
-                        if ui.button("Cancel").clicked() {
-                            self.show_add_new_ifs_window = false;
-                        }
-
-                        if ui.button("Yes!").clicked() {
-                            self.selector_vec
-                                .insert(self.selector_vec.len(), (self.max_value + 1).to_string());
-                            self.max_value += 1;
-                            self.show_add_new_ifs_window = false;
-                        }
-                    });
-                });
-        }
-    }
-
     fn render_transform_ui(&mut self, ui: &mut Ui, index: usize) {
         let mut transform_counter = 0;
         for transform in &mut self
@@ -159,28 +101,12 @@ fn array_to_image(arr: Array3<u8>) -> RgbImage {
     RgbImage::from_raw(width as u32, height as u32, raw)
         .expect("container should have the right size for the image dimensions")
 }
-use std::io::Cursor;
-
-use crate::transform::Visualize;
 
 impl eframe::App for MyApp {
-    fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        egui::CentralPanel::default().show(ctx, |ui| {
-            let save_scale =
-                1.max((self.num_points * self.num_iterations) / (self.width * self.height));
+    fn update(&mut self, ctx: &egui::Context, _: &mut eframe::Frame) {
+        install_image_loaders(ctx);
 
-            let buffer = array_to_image(self.rendered_image.to_u8(save_scale));
-            let mut bytes: Vec<u8> = Vec::new();
-            let mut writer = Cursor::new(&mut bytes);
-            buffer
-                .write_to(&mut writer, image::ImageOutputFormat::Png)
-                .unwrap();
-
-            let retained_image =
-                RetainedImage::from_image_bytes("test_image", bytes.as_slice()).unwrap();
-            //ui.image(re, size)
-            retained_image.show(ui);
-
+        egui::SidePanel::left("controls").exact_width(400.0).show(ctx, |ui| {
             if ui.button("Randomize the IFS").clicked() {
                 self.animation_sequence.ifs_vec[0] = IFS::new();
                 self.animation_sequence.ifs_vec[0].add_transform(LinearTransform::random().into());
@@ -203,12 +129,16 @@ impl eframe::App for MyApp {
                 );
             };
 
+            ui.separator();
+            ui.heading("Generation controls");
             ui.add(egui::Slider::new(&mut self.width, 1..=4096).text("Width"));
             ui.add(egui::Slider::new(&mut self.height, 1..=4096).text("Height"));
             ui.add(egui::Slider::new(&mut self.num_points, 1..=10000).text("Points"));
             ui.add(egui::Slider::new(&mut self.num_iterations, 1..=10000).text("Iterations"));
 
             // Render transform UI
+            ui.separator();
+            ui.heading("Transforms");
             self.render_transform_ui(ui, 0);
 
             if self.rerender {
@@ -219,6 +149,7 @@ impl eframe::App for MyApp {
                     self.num_points,
                     1,
                 );
+                self.counter += 1;
                 self.rerender = false;
             }
 
@@ -258,6 +189,27 @@ impl eframe::App for MyApp {
             }
 
             ui.end_row();
+        });
+
+        egui::SidePanel::right("right panel").show(ctx, |ui| {
+            ui.label("Barnsley");
+            ui.label("This tool allows you to explore iterated function systems. For more see");
+            ui.hyperlink_to("the Rust library", "https://github.com/jmbhughes/barnsley");
+        });
+
+
+        egui::CentralPanel::default().show(ctx, |ui| {
+            let mut bytes: Vec<u8> = Vec::new();
+            let save_scale =
+                1.max((self.num_points * self.num_iterations) / (self.width * self.height));
+            let buffer = array_to_image(self.rendered_image.to_u8(save_scale));
+            let _= buffer.write_to(&mut Cursor::new(&mut bytes), image::ImageOutputFormat::Png);
+            ui.ctx().forget_image("bytes://ifs.png");  // since uris are cached, we have to clear it
+            ui.add(
+                egui::Image::from_bytes("bytes://ifs.png", bytes)
+                    .max_height(self.height as f32)
+                    .max_width(self.width as f32)
+                    .shrink_to_fit());
         });
     }
 }

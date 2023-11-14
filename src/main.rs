@@ -10,7 +10,7 @@ fn main() -> eframe::Result<()> {
     eframe::run_native(
         "Barnsley",
         native_options,
-        Box::new(|cc| Box::new(barnsley_gui::MyApp::default())),
+        Box::new(|_| Box::new(barnsley_gui::MyApp::default())),
     )
 }
 
