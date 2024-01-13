@@ -4,4 +4,4 @@
 
 This is a work in progress. Expect major changes. 
 
-You can also use the Rust library version at [https://github.com/jmbhughes/barnsley](https://github.com/jmbhughes/barnsley). 
+You can also use the Rust library version at [https://github.com/jmbhughes/barnsley](https://github.com/jmbhughes/barnsley).

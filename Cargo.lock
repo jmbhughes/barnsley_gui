@@ -412,9 +412,9 @@ checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
 
 [[package]]
 name = "barnsley"
-version = "0.2.1"
+version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "66b4986f40812f4b72279a59b5ecf273864c8e9e342265cd0a549c48b7577c54"
+checksum = "079a7dfc67fd8e381eec679bb0a796dd2cccefbfe18c8028aa076802087d0eae"
 dependencies = [
  "clap",
  "enum_dispatch",

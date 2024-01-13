@@ -108,17 +108,9 @@ impl eframe::App for MyApp {
 
         egui::SidePanel::left("controls").exact_width(400.0).show(ctx, |ui| {
             if ui.button("Randomize the IFS").clicked() {
-                self.animation_sequence.ifs_vec[0] = IFS::new();
-                self.animation_sequence.ifs_vec[0].add_transform(LinearTransform::random().into());
-                self.animation_sequence.ifs_vec[0].add_transform(AffineTransform::random().into());
-                self.animation_sequence.ifs_vec[0].add_transform(MoebiusTransform::random().into());
-                self.animation_sequence.ifs_vec[0].add_transform(MoebiusTransform::random().into());
-
-                self.animation_sequence.ifs_vec[1] = IFS::new();
-                self.animation_sequence.ifs_vec[1].add_transform(LinearTransform::random().into());
-                self.animation_sequence.ifs_vec[1].add_transform(AffineTransform::random().into());
-                self.animation_sequence.ifs_vec[1].add_transform(MoebiusTransform::random().into());
-                self.animation_sequence.ifs_vec[1].add_transform(MoebiusTransform::random().into());
+                for ifs in self.animation_sequence.ifs_vec.iter_mut() {
+                    ifs.randomize();
+                }
 
                 self.rendered_image = self.animation_sequence.animate_single_step(
                     self.width,

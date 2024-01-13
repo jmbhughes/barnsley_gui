@@ -21,7 +21,7 @@ ndarray = "0.15.6"
 
 # You only need serde if you want app persistence:
 serde = { version = "1", features = ["derive"] }
-barnsley = "0.2.1"
+barnsley = "0.2.2"
 strum = "0.25.0"
 rfd = "0.12.1"
 
