@@ -48,7 +48,7 @@ impl Default for MyApp {
             rendered_image: Image::new(500, 500),
             num_points: 1000,
             num_iterations: 100,
-            width: 1000,
+            width: 500,
             height: 500,
             selected_transform_to_add: Transform::AffineTransform(AffineTransform::default()),
             delete_triggered: false,
@@ -209,11 +209,11 @@ impl eframe::App for MyApp {
                 ui.end_row();
             });
 
-        // egui::SidePanel::right("right panel").show(ctx, |ui| {
-        //     ui.label("Barnsley");
-        //     ui.label("This tool allows you to explore iterated function systems. For more see");
-        //     ui.hyperlink_to("the Rust library", "https://github.com/jmbhughes/barnsley");
-        // });
+        egui::SidePanel::right("right panel").show(ctx, |ui| {
+            ui.label("Barnsley");
+            ui.label("This tool allows you to explore iterated function systems. For more see");
+            ui.hyperlink_to("the Rust library", "https://github.com/jmbhughes/barnsley");
+        });
 
         egui::CentralPanel::default().show(ctx, |ui| {
             let mut bytes: Vec<u8> = Vec::new();
@@ -227,12 +227,6 @@ impl eframe::App for MyApp {
                     .max_size(Vec2::new(10000.0, 10000.0))
                     .fit_to_exact_size(Vec2::new(self.height as f32, self.width as f32)),
             );
-            // .max_height(100000.0)
-            // .max_width(100000.0)
-            // .fit_to_exact_size(Vec2::new(self.width as f32, self.height as f32)));
-            //.max_height(self.height as f32)
-            //.max_width(self.width as f32)
-            //.shrink_to_fit());
         });
     }
 }
