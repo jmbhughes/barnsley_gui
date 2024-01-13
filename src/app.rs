@@ -123,10 +123,18 @@ impl eframe::App for MyApp {
 
             ui.separator();
             ui.heading("Generation controls");
-            ui.add(egui::Slider::new(&mut self.width, 1..=4096).text("Width"));
-            ui.add(egui::Slider::new(&mut self.height, 1..=4096).text("Height"));
-            ui.add(egui::Slider::new(&mut self.num_points, 1..=10000).text("Points"));
-            ui.add(egui::Slider::new(&mut self.num_iterations, 1..=10000).text("Iterations"));
+            if ui.add(egui::Slider::new(&mut self.width, 1..=4096).text("Width")).changed() {
+                self.rerender = true;
+            }
+            if ui.add(egui::Slider::new(&mut self.height, 1..=4096).text("Height")).changed() {
+                self.rerender = true;
+            }
+            if ui.add(egui::Slider::new(&mut self.num_points, 1..=10000).text("Points")).changed() {
+                self.rerender = true;
+            }
+            if ui.add(egui::Slider::new(&mut self.num_iterations, 1..=10000).text("Iterations")).changed() {
+                self.rerender = true;
+            }
 
             // Render transform UI
             ui.separator();
