@@ -40,7 +40,7 @@ impl Default for MyApp {
 
         Self {
             animation_sequence: AnimationSequence {
-                ifs_vec: ifs_vec,
+                ifs_vec,
                 step_counts: vec![2],
             },
             rendered_image: Image::new(500, 500),
@@ -59,14 +59,14 @@ impl Default for MyApp {
 
 impl MyApp {
     fn render_transform_ui(&mut self, ui: &mut Ui, index: usize) {
-        let mut transform_counter = 0;
-        for transform in &mut self
+        for (transform_counter, transform) in &mut self
             .animation_sequence
             .ifs_vec
             .get_mut(index)
             .unwrap()
             .transforms
             .iter_mut()
+            .enumerate()
         {
             let (rerender_update, delete_trigger_update) = match transform {
                 Transform::LinearTransform(t) => t.ui(ui, format!("Linear: {transform_counter}")),
@@ -83,8 +83,6 @@ impl MyApp {
             if self.delete_triggered {
                 self.transform_to_delete = transform_counter;
             }
-
-            transform_counter += 1;
         }
     }
 }
