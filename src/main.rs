@@ -10,7 +10,7 @@ fn main() -> eframe::Result<()> {
     eframe::run_native(
         "Barnsley",
         native_options,
-        Box::new(|_| Box::new(barnsley_gui::MyApp::default())),
+        Box::new(|_| Box::<barnsley_gui::MyApp>::default()),
     )
 }
 
@@ -27,7 +27,7 @@ fn main() {
             .start(
                 "the_canvas_id", // hardcode it
                 web_options,
-                Box::new(|cc| Box::new(barnsley_gui::MyApp::default())),
+                Box::new(|_cc| Box::<barnsley_gui::MyApp>::default()),
             )
             .await
             .expect("failed to start eframe");
