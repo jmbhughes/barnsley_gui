@@ -7,11 +7,11 @@ use barnsley::{
 use egui::{Color32, Rgba, Ui};
 
 pub trait Visualize {
-    fn ui(&mut self, ui: &mut Ui, label: String) -> (bool, bool);
+    fn ui(&mut self, ui: &mut Ui, label: String, show_delete: bool) -> (bool, bool);
 }
 
 impl Visualize for LinearTransform {
-    fn ui(&mut self, ui: &mut Ui, label: String) -> (bool, bool) {
+    fn ui(&mut self, ui: &mut Ui, label: String, show_delete: bool) -> (bool, bool) {
         let mut rerender = false;
         let mut delete_triggered = false;
 
@@ -72,8 +72,10 @@ impl Visualize for LinearTransform {
                 }
             });
 
-            if ui.button(format!("delete {}", label)).clicked() {
-                delete_triggered = true;
+            if show_delete {
+                if ui.button(format!("delete {}", label)).clicked() {
+                    delete_triggered = true;
+                }
             }
         });
         (rerender, delete_triggered)
@@ -81,7 +83,7 @@ impl Visualize for LinearTransform {
 }
 
 impl Visualize for AffineTransform {
-    fn ui(&mut self, ui: &mut Ui, label: String) -> (bool, bool) {
+    fn ui(&mut self, ui: &mut Ui, label: String, show_delete: bool) -> (bool, bool) {
         let mut rerender = false;
         let mut delete_triggered = false;
 
@@ -158,16 +160,18 @@ impl Visualize for AffineTransform {
                 }
             });
 
-            if ui.button(format!("delete {}", label)).clicked() {
-                delete_triggered = true;
-            }
+            if show_delete {
+                if ui.button(format!("delete {}", label)).clicked() {
+                    delete_triggered = true;
+                }
+            }   
         });
         (rerender, delete_triggered)
     }
 }
 
 impl Visualize for MoebiusTransform {
-    fn ui(&mut self, ui: &mut Ui, label: String) -> (bool, bool) {
+    fn ui(&mut self, ui: &mut Ui, label: String, show_delete: bool) -> (bool, bool) {
         let mut rerender = false;
         let mut delete_triggered = false;
 
@@ -260,8 +264,10 @@ impl Visualize for MoebiusTransform {
                 }
             });
 
-            if ui.button(format!("delete {}", label)).clicked() {
-                delete_triggered = true;
+            if show_delete {
+                if ui.button(format!("delete {}", label)).clicked() {
+                    delete_triggered = true;
+                }
             }
         });
         (rerender, delete_triggered)
@@ -269,7 +275,7 @@ impl Visualize for MoebiusTransform {
 }
 
 impl Visualize for InverseJuliaTransform {
-    fn ui(&mut self, ui: &mut Ui, label: String) -> (bool, bool) {
+    fn ui(&mut self, ui: &mut Ui, label: String, show_delete: bool) -> (bool, bool) {
         let mut rerender = false;
         let mut delete_triggered = false;
 
@@ -314,8 +320,10 @@ impl Visualize for InverseJuliaTransform {
                 }
             });
 
-            if ui.button(format!("delete {}", label)).clicked() {
-                delete_triggered = true;
+            if show_delete {
+                if ui.button(format!("delete {}", label)).clicked() {
+                    delete_triggered = true;
+                }
             }
         });
         (rerender, delete_triggered)
