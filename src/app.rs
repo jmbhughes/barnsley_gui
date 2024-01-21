@@ -45,11 +45,11 @@ impl Default for MyApp {
                 ifs_vec,
                 step_counts: vec![2],
             },
-            rendered_image: Image::new(500, 500),
+            rendered_image: Image::new(1024, 1024),
             num_points: 1000,
-            num_iterations: 100,
-            width: 500,
-            height: 500,
+            num_iterations: 1000,
+            width: 1024,
+            height: 1024,
             selected_transform_to_add: Transform::AffineTransform(AffineTransform::default()),
             delete_triggered: false,
             transform_to_delete: 0,
@@ -138,13 +138,13 @@ impl eframe::App for MyApp {
                     self.rerender = true;
                 }
                 if ui
-                    .add(egui::Slider::new(&mut self.num_points, 1..=10000).text("Points"))
+                    .add(egui::Slider::new(&mut self.num_points, 1..=5000).text("Points"))
                     .changed()
                 {
                     self.rerender = true;
                 }
                 if ui
-                    .add(egui::Slider::new(&mut self.num_iterations, 1..=10000).text("Iterations"))
+                    .add(egui::Slider::new(&mut self.num_iterations, 1..=5000).text("Iterations"))
                     .changed()
                 {
                     self.rerender = true;
