@@ -134,13 +134,16 @@ impl eframe::App for MyApp {
                 };
 
                 #[cfg(not(target_arch = "wasm32"))]
-                if ui.button("Save").clicked() {
+                if ui.button("Save image").clicked() {
                     let mut bytes: Vec<u8> = Vec::new();
                     let save_scale =
                         1.max((self.num_points * self.num_iterations) / (self.width * self.height));
                     let buffer = array_to_image(self.rendered_image.to_u8(save_scale));
                     let _ = buffer.write_to(&mut Cursor::new(&mut bytes), image::ImageOutputFormat::Png);
-                    let _ = image::save_buffer("ifs.png", 
+
+                    let file = rfd::FileDialog::new().add_filter("png", &["png"]).save_file().unwrap(); 
+                    
+                    let _ = image::save_buffer(file.to_str().unwrap(), 
                         &buffer, 
                         self.height as u32, 
                         self.width as u32, 
@@ -148,7 +151,7 @@ impl eframe::App for MyApp {
                 }
 
                 #[cfg(target_arch = "wasm32")]
-                if ui.button("Save").clicked() {
+                if ui.button("Save image").clicked() {
                     let mut bytes: Vec<u8> = Vec::new();
                     let save_scale =
                         1.max((self.num_points * self.num_iterations) / (self.width * self.height));
@@ -156,7 +159,7 @@ impl eframe::App for MyApp {
                     let _ = buffer.write_to(&mut Cursor::new(&mut bytes), image::ImageOutputFormat::Png);
                     
                     let future = async move {
-                        let file = rfd::AsyncFileDialog::new().save_file().await;
+                        let file = rfd::AsyncFileDialog::new().add_filter("png", &["png"]).save_file().await;
                         file.unwrap().write(&bytes).await
                     };
                     let data = async_std::task::block_on(future);
