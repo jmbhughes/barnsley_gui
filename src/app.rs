@@ -82,7 +82,7 @@ impl MyApp {
             self.rerender |= rerender_update;
             self.delete_triggered |= delete_trigger_update;
 
-            if self.delete_triggered {
+            if delete_trigger_update {
                 self.transform_to_delete = transform_counter;
             }
         }
