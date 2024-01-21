@@ -2,8 +2,9 @@ use barnsley::animation::AnimationSequence;
 use barnsley::ifs::IFS;
 use barnsley::image::Image;
 use barnsley::transform::{
-    AffineTransform, LinearTransform, MoebiusTransform, Transform, Transformable,
+    AffineTransform, LinearTransform, MoebiusTransform, Transform, Transformable, InverseJuliaTransform,
 };
+use barnsley::util::Color;
 use egui::{self, Ui, Vec2};
 use egui_extras::install_image_loaders;
 use std::io::Cursor;
@@ -29,16 +30,14 @@ pub struct MyApp {
 impl Default for MyApp {
     fn default() -> Self {
         let mut ifs_vec = vec![IFS::new(), IFS::new()];
-        ifs_vec[0].add_transform(LinearTransform::random().into());
-        ifs_vec[0].add_transform(AffineTransform::random().into());
-        ifs_vec[0].add_transform(MoebiusTransform::random().into());
-        ifs_vec[0].add_transform(MoebiusTransform::random().into());
+        ifs_vec[0].add_transform(LinearTransform::new(0.07927406, 0.4419875, -0.64647937, 0.19174504,Color{r: 0.13267994, g: 0.49911928, b:0.9295654},0.93828845).into());
+        ifs_vec[0].add_transform(InverseJuliaTransform::new(1.1700816, 2.9560707, Color{r: 0.9284186, g: 0.4638964, b:0.20791459}, 0.95615274).into());
+        ifs_vec[0].add_transform(InverseJuliaTransform::new(1.0998807, 1.9877317, Color{r: 0.41831225, g: 0.5540522, b:0.46177816}, 1.0506994).into());
 
         ifs_vec[1] = IFS::new();
-        ifs_vec[1].add_transform(LinearTransform::random().into());
-        ifs_vec[1].add_transform(AffineTransform::random().into());
-        ifs_vec[1].add_transform(MoebiusTransform::random().into());
-        ifs_vec[1].add_transform(MoebiusTransform::random().into());
+        ifs_vec[1].add_transform(LinearTransform::new(0.07927406, 0.4419875, -0.64647937, 0.19174504,Color{r: 0.13267994, g: 0.49911928, b:0.9295654},0.93828845).into());
+        ifs_vec[1].add_transform(InverseJuliaTransform::new(1.1700816, 2.9560707, Color{r: 0.9284186, g: 0.4638964, b:0.20791459}, 0.95615274).into());
+        ifs_vec[1].add_transform(InverseJuliaTransform::new(1.0998807, 1.9877317, Color{r: 0.41831225, g: 0.5540522, b:0.46177816}, 1.0506994).into());
 
         Self {
             animation_sequence: AnimationSequence {
