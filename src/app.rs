@@ -109,6 +109,15 @@ impl eframe::App for MyApp {
         egui::SidePanel::left("controls")
             .exact_width(400.0)
             .show(ctx, |ui| {
+                ui.label(RichText::new("Welcome to Barnsley!").font(FontId::proportional(30.0)));
+                ui.label("This tool allows you to explore iterated function systems (IFS). These are mathematical structures related to fractals.");
+                ui.label("To start, try clicking the 'Randomize' button. Then, experiment with changing parameters or adding/deleting transforms.");
+    
+                ui.hyperlink_to("See the Rust code.", "https://github.com/jmbhughes/barnsley");
+                ui.hyperlink_to("Made by Marcus Hughes", "https://jmbhughes.com/");
+
+                ui.separator();
+                ui.heading("Create");
                 if ui.button("Randomize").clicked() {
                     for ifs in self.animation_sequence.ifs_vec.iter_mut() {
                         ifs.randomize();
@@ -213,15 +222,6 @@ impl eframe::App for MyApp {
 
                 ui.end_row();
             });
-
-        egui::SidePanel::right("right panel").default_width(300.0).exact_width(300.0).show(ctx, |ui| {
-            ui.label(RichText::new("Welcome to Barnsley!").font(FontId::proportional(30.0)));
-            ui.label("This tool allows you to explore iterated function systems (IFS). These are mathematical structures related to fractals.");
-            ui.label("To start, try clicking the 'Randomize' button. Then, experiment with changing parameters or adding/deleting transforms.");
-
-            ui.hyperlink_to("See the Rust code.", "https://github.com/jmbhughes/barnsley");
-            ui.hyperlink_to("Made by Marcus Hughes", "https://jmbhughes.com/")
-        });
 
         egui::CentralPanel::default().show(ctx, |ui| {
             let mut bytes: Vec<u8> = Vec::new();
