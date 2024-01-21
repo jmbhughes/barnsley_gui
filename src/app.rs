@@ -53,7 +53,7 @@ impl Default for MyApp {
             selected_transform_to_add: Transform::AffineTransform(AffineTransform::default()),
             delete_triggered: false,
             transform_to_delete: 0,
-            rerender: false,
+            rerender: true,
             counter: 0,
         }
     }
