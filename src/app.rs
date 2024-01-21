@@ -5,7 +5,7 @@ use barnsley::transform::{
     AffineTransform, LinearTransform, MoebiusTransform, Transform, Transformable, InverseJuliaTransform,
 };
 use barnsley::util::Color;
-use egui::{self, Ui, Vec2};
+use egui::{self, Ui, Vec2, FontId, RichText};
 use egui_extras::install_image_loaders;
 use std::io::Cursor;
 use strum::IntoEnumIterator;
@@ -109,7 +109,7 @@ impl eframe::App for MyApp {
         egui::SidePanel::left("controls")
             .exact_width(400.0)
             .show(ctx, |ui| {
-                if ui.button("Randomize the IFS").clicked() {
+                if ui.button("Randomize").clicked() {
                     for ifs in self.animation_sequence.ifs_vec.iter_mut() {
                         ifs.randomize();
                     }
@@ -184,8 +184,9 @@ impl eframe::App for MyApp {
                         self.delete_triggered = false;
                     } 
                 }
-
-                egui::ComboBox::from_label("Add a transform")
+                ui.separator();
+                ui.heading("Add transform");
+                egui::ComboBox::from_label("")
                     .selected_text(self.selected_transform_to_add.get_name())
                     .show_ui(ui, |ui| {
                         for t in Transform::iter() {
@@ -197,7 +198,7 @@ impl eframe::App for MyApp {
                         }
                     });
 
-                if ui.button("Add this transform").clicked() {
+                if ui.button("Add").clicked() {
                     for ifs in &mut self.animation_sequence.ifs_vec.iter_mut() {
                         ifs.add_transform(self.selected_transform_to_add);
                     }
@@ -213,10 +214,13 @@ impl eframe::App for MyApp {
                 ui.end_row();
             });
 
-        egui::SidePanel::right("right panel").show(ctx, |ui| {
-            ui.label("Barnsley");
-            ui.label("This tool allows you to explore iterated function systems. For more see");
-            ui.hyperlink_to("the Rust library", "https://github.com/jmbhughes/barnsley");
+        egui::SidePanel::right("right panel").default_width(300.0).exact_width(300.0).show(ctx, |ui| {
+            ui.label(RichText::new("Welcome to Barnsley!").font(FontId::proportional(30.0)));
+            ui.label("This tool allows you to explore iterated function systems (IFS). These are mathematical structures related to fractals.");
+            ui.label("To start, try clicking the 'Randomize' button. Then, experiment with changing parameters or adding/deleting transforms.");
+
+            ui.hyperlink_to("See the Rust code.", "https://github.com/jmbhughes/barnsley");
+            ui.hyperlink_to("Made by Marcus Hughes", "https://jmbhughes.com/")
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {
