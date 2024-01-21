@@ -2,7 +2,7 @@ use barnsley::animation::AnimationSequence;
 use barnsley::ifs::IFS;
 use barnsley::image::Image;
 use barnsley::transform::{
-    AffineTransform, LinearTransform, MoebiusTransform, Transform, Transformable, InverseJuliaTransform,
+    AffineTransform, LinearTransform, Transform, Transformable, InverseJuliaTransform,
 };
 use barnsley::util::Color;
 use egui::{self, Ui, Vec2, FontId, RichText};
