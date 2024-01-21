@@ -2,11 +2,12 @@ use barnsley::animation::AnimationSequence;
 use barnsley::ifs::IFS;
 use barnsley::image::Image;
 use barnsley::transform::{
-    AffineTransform, LinearTransform, MoebiusTransform, Transform, Transformable, InverseJuliaTransform,
+    AffineTransform, LinearTransform, Transform, Transformable, InverseJuliaTransform,
 };
 use barnsley::util::Color;
 use egui::{self, Ui, Vec2, FontId, RichText};
 use egui_extras::install_image_loaders;
+//use core::slice::SlicePattern;
 use std::io::Cursor;
 use strum::IntoEnumIterator;
 
@@ -131,6 +132,36 @@ impl eframe::App for MyApp {
                         1,
                     );
                 };
+
+                #[cfg(not(target_arch = "wasm32"))]
+                if ui.button("Save").clicked() {
+                    let mut bytes: Vec<u8> = Vec::new();
+                    let save_scale =
+                        1.max((self.num_points * self.num_iterations) / (self.width * self.height));
+                    let buffer = array_to_image(self.rendered_image.to_u8(save_scale));
+                    let _ = buffer.write_to(&mut Cursor::new(&mut bytes), image::ImageOutputFormat::Png);
+                    let _ = image::save_buffer("ifs.png", 
+                        &buffer, 
+                        self.height as u32, 
+                        self.width as u32, 
+                        image::ColorType::Rgb8);
+                }
+
+                #[cfg(target_arch = "wasm32")]
+                if ui.button("Save").clicked() {
+                    let mut bytes: Vec<u8> = Vec::new();
+                    let save_scale =
+                        1.max((self.num_points * self.num_iterations) / (self.width * self.height));
+                    let buffer = array_to_image(self.rendered_image.to_u8(save_scale));
+                    let _ = buffer.write_to(&mut Cursor::new(&mut bytes), image::ImageOutputFormat::Png);
+                    
+                    let future = async move {
+                        let file = rfd::AsyncFileDialog::new().save_file().await;
+                        file.unwrap().write(&bytes).await
+                    };
+                    let data = async_std::task::block_on(future);
+                    ui.close_menu();
+                }
 
                 ui.separator();
                 ui.heading("Generation controls");
