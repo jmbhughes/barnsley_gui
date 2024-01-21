@@ -2,9 +2,10 @@ use barnsley::animation::AnimationSequence;
 use barnsley::ifs::IFS;
 use barnsley::image::Image;
 use barnsley::transform::{
-    AffineTransform, LinearTransform, MoebiusTransform, Transform, Transformable,
+    AffineTransform, LinearTransform, MoebiusTransform, Transform, Transformable, InverseJuliaTransform,
 };
-use egui::{self, Ui, Vec2};
+use barnsley::util::Color;
+use egui::{self, Ui, Vec2, FontId, RichText};
 use egui_extras::install_image_loaders;
 use std::io::Cursor;
 use strum::IntoEnumIterator;
@@ -29,16 +30,14 @@ pub struct MyApp {
 impl Default for MyApp {
     fn default() -> Self {
         let mut ifs_vec = vec![IFS::new(), IFS::new()];
-        ifs_vec[0].add_transform(LinearTransform::random().into());
-        ifs_vec[0].add_transform(AffineTransform::random().into());
-        ifs_vec[0].add_transform(MoebiusTransform::random().into());
-        ifs_vec[0].add_transform(MoebiusTransform::random().into());
+        ifs_vec[0].add_transform(LinearTransform::new(0.07927406, 0.4419875, -0.64647937, 0.19174504,Color{r: 0.13267994, g: 0.49911928, b:0.9295654},0.93828845).into());
+        ifs_vec[0].add_transform(InverseJuliaTransform::new(1.1700816, 2.9560707, Color{r: 0.9284186, g: 0.4638964, b:0.20791459}, 0.95615274).into());
+        ifs_vec[0].add_transform(InverseJuliaTransform::new(1.0998807, 1.9877317, Color{r: 0.41831225, g: 0.5540522, b:0.46177816}, 1.0506994).into());
 
         ifs_vec[1] = IFS::new();
-        ifs_vec[1].add_transform(LinearTransform::random().into());
-        ifs_vec[1].add_transform(AffineTransform::random().into());
-        ifs_vec[1].add_transform(MoebiusTransform::random().into());
-        ifs_vec[1].add_transform(MoebiusTransform::random().into());
+        ifs_vec[1].add_transform(LinearTransform::new(0.07927406, 0.4419875, -0.64647937, 0.19174504,Color{r: 0.13267994, g: 0.49911928, b:0.9295654},0.93828845).into());
+        ifs_vec[1].add_transform(InverseJuliaTransform::new(1.1700816, 2.9560707, Color{r: 0.9284186, g: 0.4638964, b:0.20791459}, 0.95615274).into());
+        ifs_vec[1].add_transform(InverseJuliaTransform::new(1.0998807, 1.9877317, Color{r: 0.41831225, g: 0.5540522, b:0.46177816}, 1.0506994).into());
 
         Self {
             animation_sequence: AnimationSequence {
@@ -110,7 +109,7 @@ impl eframe::App for MyApp {
         egui::SidePanel::left("controls")
             .exact_width(400.0)
             .show(ctx, |ui| {
-                if ui.button("Randomize the IFS").clicked() {
+                if ui.button("Randomize").clicked() {
                     for ifs in self.animation_sequence.ifs_vec.iter_mut() {
                         ifs.randomize();
                     }
@@ -185,8 +184,9 @@ impl eframe::App for MyApp {
                         self.delete_triggered = false;
                     } 
                 }
-
-                egui::ComboBox::from_label("Add a transform")
+                ui.separator();
+                ui.heading("Add transform");
+                egui::ComboBox::from_label("")
                     .selected_text(self.selected_transform_to_add.get_name())
                     .show_ui(ui, |ui| {
                         for t in Transform::iter() {
@@ -198,7 +198,7 @@ impl eframe::App for MyApp {
                         }
                     });
 
-                if ui.button("Add this transform").clicked() {
+                if ui.button("Add").clicked() {
                     for ifs in &mut self.animation_sequence.ifs_vec.iter_mut() {
                         ifs.add_transform(self.selected_transform_to_add);
                     }
@@ -214,10 +214,13 @@ impl eframe::App for MyApp {
                 ui.end_row();
             });
 
-        egui::SidePanel::right("right panel").show(ctx, |ui| {
-            ui.label("Barnsley");
-            ui.label("This tool allows you to explore iterated function systems. For more see");
-            ui.hyperlink_to("the Rust library", "https://github.com/jmbhughes/barnsley");
+        egui::SidePanel::right("right panel").default_width(300.0).exact_width(300.0).show(ctx, |ui| {
+            ui.label(RichText::new("Welcome to Barnsley!").font(FontId::proportional(30.0)));
+            ui.label("This tool allows you to explore iterated function systems (IFS). These are mathematical structures related to fractals.");
+            ui.label("To start, try clicking the 'Randomize' button. Then, experiment with changing parameters or adding/deleting transforms.");
+
+            ui.hyperlink_to("See the Rust code.", "https://github.com/jmbhughes/barnsley");
+            ui.hyperlink_to("Made by Marcus Hughes", "https://jmbhughes.com/")
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {
