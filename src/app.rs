@@ -61,6 +61,7 @@ impl Default for MyApp {
 
 impl MyApp {
     fn render_transform_ui(&mut self, ui: &mut Ui, index: usize) {
+        let show_delete = self.animation_sequence.ifs_vec.get(0).unwrap().len() > 1;
         for (transform_counter, transform) in &mut self
             .animation_sequence
             .ifs_vec
@@ -71,18 +72,18 @@ impl MyApp {
             .enumerate()
         {
             let (rerender_update, delete_trigger_update) = match transform {
-                Transform::LinearTransform(t) => t.ui(ui, format!("Linear: {transform_counter}")),
-                Transform::AffineTransform(t) => t.ui(ui, format!("Affine: {transform_counter}")),
-                Transform::MoebiusTransform(t) => t.ui(ui, format!("Moebius: {transform_counter}")),
+                Transform::LinearTransform(t) => t.ui(ui, format!("Linear: {transform_counter}"), show_delete),
+                Transform::AffineTransform(t) => t.ui(ui, format!("Affine: {transform_counter}"), show_delete),
+                Transform::MoebiusTransform(t) => t.ui(ui, format!("Moebius: {transform_counter}"), show_delete),
                 Transform::InverseJuliaTransform(t) => {
-                    t.ui(ui, format!("InverseJulia: {transform_counter}"))
+                    t.ui(ui, format!("InverseJulia: {transform_counter}"), show_delete)
                 }
             };
 
             self.rerender |= rerender_update;
             self.delete_triggered |= delete_trigger_update;
 
-            if self.delete_triggered {
+            if delete_trigger_update {
                 self.transform_to_delete = transform_counter;
             }
         }
@@ -168,17 +169,21 @@ impl eframe::App for MyApp {
                 }
 
                 if self.delete_triggered {
-                    for ifs in self.animation_sequence.ifs_vec.iter_mut() {
-                        ifs.delete_transform(self.transform_to_delete);
-                    }
-                    self.delete_triggered = false;
-                    self.rendered_image = self.animation_sequence.animate_single_step(
-                        self.width,
-                        self.height,
-                        self.num_iterations,
-                        self.num_points,
-                        1,
-                    );
+                    if self.animation_sequence.ifs_vec.get(0).unwrap().len() > 1 {
+                        for ifs in self.animation_sequence.ifs_vec.iter_mut() {
+                            ifs.delete_transform(self.transform_to_delete);
+                        }
+                        self.delete_triggered = false;
+                        self.rendered_image = self.animation_sequence.animate_single_step(
+                            self.width,
+                            self.height,
+                            self.num_iterations,
+                            self.num_points,
+                            1,
+                        );
+                    } else {  // cannot delete since there's only one transform left
+                        self.delete_triggered = false;
+                    } 
                 }
 
                 egui::ComboBox::from_label("Add a transform")
