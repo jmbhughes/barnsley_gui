@@ -15,7 +15,7 @@ impl Visualize for LinearTransform {
         let mut rerender = false;
         let mut delete_triggered = false;
 
-        ui.collapsing(label, |ui| {
+        ui.collapsing(label.clone(), |ui| {
             ui.horizontal(|ui| {
                 ui.label("a");
                 let result = ui.add(egui::Slider::new(&mut self.a, -1.0..=1.0));
@@ -72,7 +72,7 @@ impl Visualize for LinearTransform {
                 }
             });
 
-            if ui.button("delete").clicked() {
+            if ui.button(format!("delete {}", label)).clicked() {
                 delete_triggered = true;
             }
         });
@@ -85,7 +85,7 @@ impl Visualize for AffineTransform {
         let mut rerender = false;
         let mut delete_triggered = false;
 
-        ui.collapsing(label, |ui| {
+        ui.collapsing(label.clone(), |ui| {
             ui.horizontal(|ui| {
                 ui.label("a");
                 let result = ui.add(egui::Slider::new(&mut self.a, -1.0..=1.0));
@@ -158,7 +158,7 @@ impl Visualize for AffineTransform {
                 }
             });
 
-            if ui.button("delete").clicked() {
+            if ui.button(format!("delete {}", label)).clicked() {
                 delete_triggered = true;
             }
         });
@@ -171,7 +171,7 @@ impl Visualize for MoebiusTransform {
         let mut rerender = false;
         let mut delete_triggered = false;
 
-        ui.collapsing(label, |ui| {
+        ui.collapsing(label.clone(), |ui| {
             ui.horizontal(|ui| {
                 ui.label("a.re");
                 let result = ui.add(egui::Slider::new(&mut self.a.re, -1.0..=1.0));
@@ -260,7 +260,7 @@ impl Visualize for MoebiusTransform {
                 }
             });
 
-            if ui.button("delete").clicked() {
+            if ui.button(format!("delete {}", label)).clicked() {
                 delete_triggered = true;
             }
         });
@@ -273,7 +273,7 @@ impl Visualize for InverseJuliaTransform {
         let mut rerender = false;
         let mut delete_triggered = false;
 
-        ui.collapsing(label, |ui| {
+        ui.collapsing(label.clone(), |ui| {
             ui.horizontal(|ui| {
                 ui.label("r");
                 let result = ui.add(egui::Slider::new(&mut self.r, 0.0..=3.0));
@@ -314,7 +314,7 @@ impl Visualize for InverseJuliaTransform {
                 }
             });
 
-            if ui.button("delete").clicked() {
+            if ui.button(format!("delete {}", label)).clicked() {
                 delete_triggered = true;
             }
         });
