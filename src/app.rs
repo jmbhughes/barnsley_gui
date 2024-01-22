@@ -144,8 +144,9 @@ impl eframe::App for MyApp {
                 ui.label(RichText::new("Welcome to Barnsley!").font(FontId::proportional(30.0)));
                 ui.label("This tool allows you to explore iterated function systems (IFS). These are mathematical structures related to fractals.");
                 ui.label("To start, try clicking the 'Randomize' button. Then, experiment with changing parameters or adding/deleting transforms.");
-    
-                ui.hyperlink_to("See the Rust code.", "https://github.com/jmbhughes/barnsley");
+
+                ui.hyperlink_to("See a short user guide", "https://jmbhughes.com/posts/fractals/intro-barnsley/");
+                ui.hyperlink_to("See the Rust code", "https://github.com/jmbhughes/barnsley");
                 ui.hyperlink_to("Made by Marcus Hughes", "https://jmbhughes.com/");
 
                 ui.separator();
