@@ -1,6 +1,6 @@
 # Barnsley
 
-[A web based editor for iterated function systems.](https://barnsley.dev/)
+[A web based editor for iterated function systems.](https://jmbhughes.com/barnsley_gui/)
 
 This is a work in progress. Expect major changes.
 
