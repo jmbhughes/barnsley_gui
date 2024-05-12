@@ -2,8 +2,8 @@ var cacheName = 'egui-template-pwa';
 var filesToCache = [
   './',
   './index.html',
-  './barnsley_gui/barnsley_gui.js',
-  './barnsley_gui/barnsley_gui_bg.wasm',
+  './barnsley_gui.js',
+  './barnsley_gui_bg.wasm',
 ];
 
 /* Start the service worker and cache all of the app's content */
